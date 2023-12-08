@@ -1,0 +1,15 @@
+# CD to kafka folder first and the following command to Start Zookeeper
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+# Create 2 logs for 2 brokers
+mkdir /tmp/kafka-logs1
+mkdir /tmp/kafka-logs2
+
+# Start Kafka broker instances, run on different terminal sessions
+bin/kafka-server-start.sh config/server.1.properties
+
+# Terminal 2
+bin/kafka-server-start.sh config/server.2.properties
+
+#Create Topics
+bin/kafka-topics.sh --create --topic stock_data --bootstrap-server localhost:9093 --partitions 2 --replication-factor 2
