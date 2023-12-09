@@ -74,7 +74,16 @@ Open a new terminal session and run the second command:
 ```
 bin/kafka-server-start.sh config/server.2.properties
 ```
+Once started successfully, the following message should appear:
+```
+[2023-12-08 20:08:43,025] INFO Kafka version: 3.6.1 (org.apache.kafka.common.utils.AppInfoParser)
 
+[2023-12-08 20:08:43,026] INFO Kafka commitId: 5e3c2b738d253ff5 (org.apache.kafka.common.utils.AppInfoParser)
+
+[2023-12-08 20:08:43,026] INFO Kafka startTimeMs: 1702084123018 (org.apache.kafka.common.utils.AppInfoParser)
+
+[2023-12-08 20:08:43,028] INFO [KafkaServer id=1] started (kafka.server.KafkaServer)
+```
 
 Creating Topics
 ------------------
@@ -86,4 +95,20 @@ bin/kafka-topics.sh --create --topic stock-data --bootstrap-server localhost:909
 Once you created the topic successfully, you should see a message:
 ```
 Created topic stock-data.
+```
+
+Starting Consumer
+---------------------
+cd into Stock-Data-Streaming-ETL folder 
+
+type in commands to start our consumer:
+```
+python kafka_consumer.py stock-data
+```
+
+Starting Producer
+------------------
+commands to start our producer:
+```
+python kafka_producer.py stock-data
 ```
