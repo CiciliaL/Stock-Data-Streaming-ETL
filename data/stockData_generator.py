@@ -60,6 +60,8 @@ def generate_mock_stock_data(num_records=100, start_date=datetime(2023, 1, 1), e
         seconds = random.randint(0, 59)
         timestamp = datetime(date.year, date.month, date.day, hours, minutes, seconds)
 
+        daily_price_change = round(close_price - initial_price, 2)  # Calculate daily price change
+
         stock_data.append({
             'symbol': symbol,
             'timestamp': int(timestamp.timestamp()),
@@ -67,7 +69,8 @@ def generate_mock_stock_data(num_records=100, start_date=datetime(2023, 1, 1), e
             'close_price': round(close_price, 2),
             'high': round(high, 2),
             'low': round(low, 2),
-            'volume': volume
+            'volume': volume,
+            'daily_price_change': daily_price_change
         })
 
     return stock_data
@@ -107,4 +110,5 @@ if __name__ == "__main__":
               f"Close Price: ${data_point['close_price']}, "
               f"High: ${data_point['high']}, "
               f"Low: ${data_point['low']}, "
-              f"Volume: {data_point['volume']} shares")
+              f"Volume: {data_point['volume']} shares",
+              f"Daily Price Change: ${data_point['daily_price_change']}")
