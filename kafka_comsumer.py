@@ -2,6 +2,7 @@ from confluent_kafka import Consumer
 import json
 import logging
 import kafka_config
+import time
 
 
 def write_message_to_json(msg, output_file):
@@ -17,7 +18,7 @@ def write_message_to_json(msg, output_file):
         json_file.write('\n')
 
 
-def consume_messages(server, topic, output_file):
+def consume_messages(server, topic, output_file, timeout_sec=10):
     """
     Consume messages from given topics and write them to DB.
     Since there is no available DB currently, we will write to a json file
@@ -31,10 +32,16 @@ def consume_messages(server, topic, output_file):
     consumer = Consumer(conf)
     consumer.subscribe([topic])
 
+    start_time = time.time()
+
     try:
         while True:
             msg = consumer.poll(1.0)
             if msg is None:
+                elapsed_time = time.time() - start_time
+                if elapsed_time >= timeout_sec:
+                    logging.info(f'No New data received for {timeout_sec} seconds')
+                    break
                 continue
             if msg.error():
                 logging.error(f'Error: {msg.error()}')
@@ -42,6 +49,8 @@ def consume_messages(server, topic, output_file):
                 message_data = json.loads(msg.value().decode("utf-8"))
                 write_message_to_json(message_data, output_file)
                 logging.info(f'Received and written to JSON: {message_data}')
+
+                start_time = time.time()  # reset the time if new message received
     except KeyboardInterrupt:
         pass
     finally:
