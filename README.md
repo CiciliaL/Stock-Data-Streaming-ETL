@@ -65,6 +65,7 @@ mkdir /tmp/kafka-logs1
 mkdir /tmp/kafka-logs2
 ```
 **Start 2 broker instances**
+
 Run the first command:
 ```
 bin/kafka-server-start.sh config/server.1.properties
@@ -80,9 +81,9 @@ Creating Topics
 **Create a topic**
 default topic name is 'stock_data', if you need to change the topic, remember to also change the topic variable in kafka_config.py
 ```
-bin/kafka-topics.sh --create --topic stock_data --bootstrap-server localhost:9093 --partitions 2 --replication-factor 2
+bin/kafka-topics.sh --create --topic stock-data --bootstrap-server localhost:9093 --partitions 2 --replication-factor 2
 ```
 Once you created the topic successfully, you should see a message:
 ```
-Created topic my-kafka-topic.
+Created topic stock-data.
 ```
