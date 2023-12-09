@@ -18,7 +18,7 @@ def write_message_to_json(msg, output_file):
         json_file.write('\n')
 
 
-def consume_messages(server, topic, output_file, timeout_sec=10):
+def consume_messages(server, topic, output_file, timeout_sec=15):
     """
     Consume messages from given topics and write them to DB.
     Since there is no available DB currently, we will write to a json file
@@ -26,6 +26,7 @@ def consume_messages(server, topic, output_file, timeout_sec=10):
 
     :param server: The Kafka server configuration, configurable in kafka_config.py.
     :param topic: The Kafka topic to which our consumer subscribed, configurable in kafka_config.py.
+    :param timeout_sec: Time interval if consumer did not receive new message for, consumer will shut down.
     :return: None
     """
     conf = {'bootstrap.servers': server, 'group.id': 'my_group', 'auto.offset.reset': 'earliest'}
