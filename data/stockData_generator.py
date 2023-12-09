@@ -52,7 +52,8 @@ def generate_mock_stock_data(num_records=100, start_date=datetime(2023, 1, 1), e
         price_change = random.uniform(-volatility, volatility)
         close_price = initial_price * (1 + price_change)
         high = initial_price * random.uniform(1.01, 1.25)
-        low = initial_price * random.uniform(0.75, 0.99)
+        low = initial_price * random.uniform(0.75, 1.10)  # possibility of low being greater
+        # than high for data validation
         volume = random.randint(100000, 500000)
 
         hours = random.randint(9, 15)
@@ -88,14 +89,13 @@ def generate_json_file(file_path, stock_data):
         print(f'Error writing to {file_path}: {e}')
 
 
-
-# Load all data into json file for streaming
+# Load all data into json file for comparing
 data = generate_mock_stock_data()
 generate_json_file('data.json', data)
 
 
 if __name__ == "__main__":
-    num_records = 100
+    num_records = 5
     start_date = datetime(2023, 1, 1)
     end_date = datetime(2023, 12, 31)
     initial_price_range = (50.0, 110.0)

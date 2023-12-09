@@ -3,6 +3,7 @@ import json
 from data import stockData_generator
 import logging
 import kafka_config
+import time
 
 
 def error_report(err, msg):
@@ -52,8 +53,9 @@ if __name__ == '__main__':
 
     while True:
         try:
-            stock_data = stockData_generator.generate_mock_stock_data(num_records=20)
+            stock_data = stockData_generator.generate_mock_stock_data(num_records=5)
             produce_messages(bootstrap_servers, topic, stock_data)
+            time.sleep(2)
 
         except KeyboardInterrupt:
             logging.info('Received KeyboradInterrupt. Kafka producer stopped.')

@@ -49,6 +49,7 @@ def consume_messages(server, topic, output_file):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     bootstrap_servers = kafka_config.bootstrap_servers
     topic = kafka_config.topic
 
