@@ -2,6 +2,7 @@ import random
 import string
 from datetime import datetime, timedelta
 import json
+import os
 
 
 def generate_symbols(num_symbols=10, symbol_length=3):
@@ -80,21 +81,25 @@ def generate_mock_stock_data(num_records=100, start_date=datetime(2023, 1, 1), e
 def generate_json_file(file_path, stock_data):
 
     try:
-        with open(file_path, 'w') as json_file:
-            json.dump(stock_data, json_file, indent=2)
+        with open(file_path, 'a') as json_file:
+            if os.path.getsize(file_path) == 0:  # if empty, writes to file directly
+                json.dump(stock_data, json_file, indent=2)
+                json_file.close()
+            else:
+                with open(file_path, 'r') as json_file:
+                    existing_data = json.load(json_file)
+                    json_file.close()
+                existing_data.extend(stock_data)
+                with open(file_path, 'w') as json_file:
+                    json.dump(existing_data, json_file, indent=2)
 
-        print(f'{file_path} has been generated.\n')
+        print(f'data added to {file_path}\n')
 
     except Exception as e:
         print(f'Error writing to {file_path}: {e}')
 
 
-# Load all data into json file for comparing
-data = generate_mock_stock_data()
-generate_json_file('data.json', data)
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     num_records = 5
     start_date = datetime(2023, 1, 1)
     end_date = datetime(2023, 12, 31)
