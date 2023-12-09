@@ -51,18 +51,21 @@ if __name__ == '__main__':
     bootstrap_servers = kafka_config.bootstrap_servers  # modify in kafka_config
     topic = kafka_config.topic  # modify in kafka_config
 
-    while True:
+    n = 0
+    while n < 30:
         try:
-            stock_data = stockData_generator.generate_mock_stock_data(num_records=5)
+            stock_data = stockData_generator.generate_mock_stock_data(num_records=10)
             produce_messages(bootstrap_servers, topic, stock_data)
-            time.sleep(2)
+            stockData_generator.generate_json_file('data.json', stock_data)
+            n += 1
+            time.sleep(0.5)
 
         except KeyboardInterrupt:
             logging.info('Received KeyboradInterrupt. Kafka producer stopped.')
             break
 
         except json.JSONDecodeError as e:
-            logging.error(f"Error decoding JSON: {e}")
+            logging.error(f'Error decoding JSON: {e}')
 
         except Exception as e:
             logging.error(f'Exception raised. Error code:{e}')
