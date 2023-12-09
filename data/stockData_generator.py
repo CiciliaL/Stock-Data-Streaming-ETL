@@ -79,17 +79,26 @@ def generate_mock_stock_data(num_records=100, start_date=datetime(2023, 1, 1), e
 
 
 def generate_json_file(file_path, stock_data):
+    """
+    Write or append JSON data to file.
+    :param file_path: path of file.
+    :param stock_data: Data to be written to file.
+    :return: None
+    """
 
     try:
         with open(file_path, 'a') as json_file:
             if os.path.getsize(file_path) == 0:  # if empty, writes to file directly
                 json.dump(stock_data, json_file, indent=2)
                 json_file.close()
-            else:
+
+            else:  # not empty, append new data
                 with open(file_path, 'r') as json_file:
                     existing_data = json.load(json_file)
                     json_file.close()
+
                 existing_data.extend(stock_data)
+
                 with open(file_path, 'w') as json_file:
                     json.dump(existing_data, json_file, indent=2)
 
