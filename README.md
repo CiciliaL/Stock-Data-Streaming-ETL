@@ -5,7 +5,7 @@ Mock streaming stock data using Kafka with 2 brokers for distributed processing.
 The stock data is generated randomly by stockData_generator.py. 
 
 Stock data is generated as a list of dictionaries:
-```
+```json
 [
   {
     "symbol": "NXB",
@@ -111,4 +111,77 @@ Starting Producer
 commands to start our producer:
 ```
 python kafka_producer.py stock-data
+```
+
+Data Validation
+---------------------------
+There are two json file generated.
+
+One called data.json under the main directory which is the original data generated before ingesting by kafka.
+
+The other one called stock_data.json under data folder acts as data loaded into our DB.(Since we don't have a DB at the moment)
+
+**Simulate data corruption scenario 1: Empty Value**
+
+Open the stock_data.json file and change some values to None
+
+**Simulate data corruption scenario 2: Missing fields**
+
+Open the stock_data.json file and delete some fields from records
+
+**Simulate data corruption scenario 3: Logical Error**
+
+Such as a stock's low price is greater than it's high price. This error is generated 
+by stockData_generator already. No need to change any data.
+
+**Doing data validation**
+
+CD into data folder,
+
+Run the following command to do data integrity check:
+```
+python data_check.py
+```
+
+Summary of records passed integrity test and detail of which record failed will
+appear in terminal.
+
+The file called dataToBeReviewed.json under data folder has all the corrupted data
+with error type specified for further review.
+
+```json
+[
+  {
+    "symbol": "MVY",
+    "timestamp": 1680457995,
+    "open_price": 94.44,
+    "close_price": 93.37,
+    "high": 95.73,
+    "low": 103.31,
+    "volume": 204408,
+    "daily_price_change": -1.06,
+    "ERROR": "LOGICAL"
+  },
+  {
+    "symbol": "BZC",
+    "timestamp": 1688068233,
+    "open_price": 63.34,
+    "close_price": 0,
+    "high": 72.0,
+    "low": 67.87,
+    "volume": 307253,
+    "daily_price_change": 3.0,
+    "ERROR": "EMPTY VALUE"
+  },
+  {
+    "symbol": "SLB",
+    "timestamp": 1701186213,
+    "open_price": 77.54,
+    "close_price": 0,
+    "high": 84.76,
+    "low": 80.68,
+    "volume": 271815,
+    "daily_price_change": -8.98,
+    "ERROR": "EMPTY VALUE"
+  }]
 ```
