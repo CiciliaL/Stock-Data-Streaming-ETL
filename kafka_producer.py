@@ -33,7 +33,12 @@ def produce_messages(server, topic, stock_data):
     :param stock_data: A list of messages (stock data, data format is list of dictionaries) to be produced to the Kafka topic.
     :return: None
     """
-    conf = {'bootstrap.servers': server}
+    conf = {
+        'bootstrap.servers': server,
+        'acks': 1,
+        'retries': 5,
+        'retry.backoff.ms': 100
+    }  # producer requires at least one acknowledgement to consider message sent to prevent data loss
     producer = Producer(conf)
 
     try:
