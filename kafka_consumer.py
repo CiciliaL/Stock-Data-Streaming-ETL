@@ -2,12 +2,11 @@ from confluent_kafka import Consumer
 import json
 import logging
 import kafka_config
-import time
 
 
 def write_message_to_json(msg, output_file):
     """
-    Write message to a JSON file.
+    Write message to a JSON file. Using this as substitute for DB.
 
     :param msg: The message data to be written to the JSON file.
     :param output_file: The path to the JSON file.
@@ -18,7 +17,7 @@ def write_message_to_json(msg, output_file):
         json_file.write('\n')
 
 
-def consume_messages(server, topic, output_file, timeout_sec=15):
+def consume_messages(server, topic, output_file, timeout_sec=10.0):
     """
     Consume messages from given topics and write them to DB.
     Since there is no available DB currently, we will write to a json file
@@ -26,32 +25,33 @@ def consume_messages(server, topic, output_file, timeout_sec=15):
 
     :param server: The Kafka server configuration, configurable in kafka_config.py.
     :param topic: The Kafka topic to which our consumer subscribed, configurable in kafka_config.py.
-    :param timeout_sec: Time interval if consumer did not receive new message for, consumer will shut down.
     :return: None
     """
-    conf = {'bootstrap.servers': server, 'group.id': 'my_group', 'auto.offset.reset': 'earliest'}
+    conf = {
+        'bootstrap.servers': server,
+        'group.id': 'my_group',
+        'auto.offset.reset': 'earliest'
+    }
     consumer = Consumer(conf)
     consumer.subscribe([topic])
 
-    start_time = time.time()
-
+    message_count = 0
     try:
         while True:
-            msg = consumer.poll(1.0)
+            msg = consumer.poll(timeout_sec)
+
             if msg is None:
-                elapsed_time = time.time() - start_time
-                if elapsed_time >= timeout_sec:
-                    logging.info(f'No New data received for {timeout_sec} seconds')
-                    break
-                continue
+                logging.info(f'No New data received for {timeout_sec} seconds')
+                logging.info(f'Total messages received: {message_count}')
+                break
             if msg.error():
                 logging.error(f'Error: {msg.error()}')
             else:
                 message_data = json.loads(msg.value().decode("utf-8"))
                 write_message_to_json(message_data, output_file)
                 logging.info(f'Received and written to JSON: {message_data}')
+                message_count += 1  # to keep track of num of messages polled
 
-                start_time = time.time()  # reset the time if new message received
     except KeyboardInterrupt:
         pass
     finally:
@@ -63,4 +63,4 @@ if __name__ == '__main__':
     bootstrap_servers = kafka_config.bootstrap_servers
     topic = kafka_config.topic
 
-    consume_messages(bootstrap_servers, topic, './stock_data.json')
+    consume_messages(bootstrap_servers, topic, './stock_data.json', timeout_sec=12.0)
