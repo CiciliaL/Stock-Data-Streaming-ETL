@@ -31,7 +31,7 @@ def validate_data(record):
             if field not in data:  # check for missing field
                 data.update({'ERROR': 'MISSING FIELD'})
                 return False, data
-            return True, None
+        return True, None
 
     except json.JSONDecodeError:  # empty value return JSONDecodeError
         corrected_record = record.replace('None', '0').strip()
