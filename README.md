@@ -34,6 +34,10 @@ cd Stock-Data-Streaming-ETL
 
 Starting Kafka Servers
 ----------------------
+Download Kafka through link in requirements.txt.
+
+Extract files to main folder Stock-Data-Streaming-ETL.
+
 
 **cd into Kafka folder and Start Zookeeper**
 ```
