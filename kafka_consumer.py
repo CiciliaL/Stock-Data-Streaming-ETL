@@ -63,4 +63,4 @@ if __name__ == '__main__':
     bootstrap_servers = kafka_config.bootstrap_servers
     topic = kafka_config.topic
 
-    consume_messages(bootstrap_servers, topic, './stock_data.json', timeout_sec=12.0)
+    consume_messages(bootstrap_servers, topic, './data/stock_data.json', timeout_sec=12.0)
